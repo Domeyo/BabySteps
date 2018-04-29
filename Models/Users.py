@@ -51,7 +51,7 @@ class Users:
 				count = False
 			count = True
 		if address:
-			if not dbModule.insertToDB("update user set address='%s' where id = %s"%(id,address)):
+			if not dbModule.insertToDB("update user set address='%s' where id = %s"%(address, id)):
 				count = False
 			count = True
 		if count:

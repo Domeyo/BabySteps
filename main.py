@@ -2,7 +2,7 @@ from flask import Flask, Response, request, json, jsonify
 from Models import Users as ur
 app = Flask(__name__)
 
-
+#users
 @app.route('/register',methods=['POST'])
 def register():
 	email = request.args.get('email')
@@ -35,5 +35,13 @@ def login():
 def logout(user_id):
 	return jsonify(ur.Users().signOut(user_id))
 
+@app.route('/users/<int:id>',methods=['PUT','PATCH'])
+def update(id):
+	email = request.args.get('email')
+	phone = request.args.get('phone')
+	address = request.args.get('address')
+	return jsonify(ur.Users().update(id,email=email,phone_no=phone,address=address))
+
+#meals
 if __name__ == "__main__":
 	app.run(debug=True)
