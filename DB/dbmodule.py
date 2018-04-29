@@ -34,6 +34,8 @@ class DBModule(object):
         #try:
         self.cursor.execute(query)
         results = self.cursor.fetchall()
+        if not results:
+            return False
         #except:
          #   print("Haha things went wrong")
          #   return False
@@ -53,9 +55,13 @@ class DBModule(object):
         return result
 
     def insertToDB(self,query):
-        self.cursor.execute(query)
-        self.conn.commit()
-    
+        #try:
+            self.cursor.execute(query)
+            self.conn.commit()
+            return True
+        #except:
+        #   return False
+
     def __quit__(self):
         self.cursor.close()
         self.conn.close()
