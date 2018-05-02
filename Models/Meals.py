@@ -1,0 +1,59 @@
+from DB import dbmodule as db
+dbModule = db.DBModule(host='localhost',user='root',pswd='carrot24',db='BabyStepsDB')
+
+class Meals:
+	def fetchMealsById(self, user_id, meals_id):
+		query = "select id, user_id, meal, category from meals where id = '%s' and user_id = '%s' "
+		query = query%(user_id, meals_id)
+		results = dbModule.selectStuff(query)[0]
+		if not results:
+			return {'response':'meal not found'}
+		meal={'meal_id':results[0],'user_id':results[1],'meal':results[2],'category':results[3]}
+		return {'status':'success','meal':meal}
+
+
+	def fetchMealsOfUser(self, user_id):
+		query = "select id,user_id, meal, category from meals where user_id = %s order by created_at desc"%user_id
+		results = dbModule.selectStuff(query)
+		if not results:
+			return {'status':'failed','response':'meals not found'}
+		meals = {}
+		for i,result in enumerate(results):
+			meals['meal(%s)'%i] = {'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]}
+		return {'status':'success','meals':meals}
+
+	def createMeal(self, user_id, meal, category):
+		query = "insert into meals (user_id, meal, category) values (%s,'%s','%s')"%(user_id,meal,category)
+		if dbModule.insertToDb(query):
+			return {'status':'success','response':'meal created'}
+		return  {'status':'failed','error':'meal creation failed'}
+
+	def editMeal(user_id,meal_id,meal=None,category=None):
+		commit = False
+		query = "select user_id from meals where id = %s"%meal_id
+		user = dbModule.selectStuff(query)
+		if user[0] != str(user_id):
+			return {'status':'failed','error':'this user cannot update this'}
+		if meal:
+			query = "update meals set meal = '%s' where id = %s"%(meal,meal_id)
+			if not dbModule.insertToDb(query):
+				commit = False
+			commit = True
+		if category:
+			query = "update meals set category = '%s' where id = %s"%(category,meal_id)
+			if not dbModule.insertToDb(query):
+				commit = False
+			commit = True
+		if commit:
+			return {'status':'success','response':'meal update successfully'}
+		return {'status':'failed','error':'failed to update meals'}
+
+	def delete(user_id,meal_id):
+		query = "select user_id from meals where id = %s"%meal_id
+		user = dbModule.selectStuff(query)
+		if user[0] != str(user_id):
+			return {'status':'failed','error':'this user cannot update this'}
+		query = "delete from meals where id = %s"%meal_id
+		if dbModule.insertToDb(query):
+			return {'status':'success','response':'meal deleted'}
+		return {'status':'failed','error':'failed to delete meal'}

@@ -7,7 +7,7 @@ class Users:
 		query =  "select id, email, phone_no, address, api_token from user where id = %s"%id
 		results = dbModule.selectStuff(query)[0]
 		if not results:
-			return {'response':"user not found"}
+			return {'status':'failed', 'response':"user not found"}
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
 		return user
 
@@ -15,7 +15,7 @@ class Users:
 		query =  "select id, email, phone_no, address, api_token from user where email = '%s'"%(email)
 		results = dbModule.selectStuff(query)[0]
 		if not results:
-			return {'response':"user not found"}
+			return {'status':'failed', 'response':"user not found"}
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
 		return user
 
@@ -23,7 +23,7 @@ class Users:
 		query =  "select id, email, phone_no, address, api_token from user where phone_no = '%s'"%phone
 		results = dbModule.selectStuff(query)[0]
 		if not results:
-			return {'response':"user not found"}
+			return {'status':'failed','response':"user not found"}
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
 		return user
 
@@ -32,7 +32,7 @@ class Users:
 		query = "insert into user (email,phone_no,address,password) values('%s','%s','%s','%s')"%(email,phone,address,password)
 		if dbModule.insertToDB(query):
 			return self.fetchUserByEmail(email)
-		return {'response':'user creation failed'}
+		return {'status':'failed','response':'user creation failed'}
 
 	def delete(self, id):
 		query = "delete from user where id = %s"%id
@@ -61,9 +61,9 @@ class Users:
 	def signIn(self,email=None,phone=None,password=None):
 		choice = ""
 		if not email and not phone:
-			return {'error','email or phone required'}
+			return {'status':'failed','error':'email or phone required'}
 		if not password:
-			return {'error','password required'}
+			return {'status':'failed','error':'password required'}
 		password = base64.b64encode(password)
 		if email:
 			choice = "email"
@@ -75,13 +75,13 @@ class Users:
 		if dbModule.selectStuff(query):
 			if choice == 'phone_no':
 				if not dbModule.insertToDB("update user set api_token = '%s' where %s = '%s'"%(api_token,choice,phone)):
-					return {'error':'login failed'}
+					return {'status':'failed','error':'login failed'}
 				return self.fetchUserByPhone(phone)
 			else:
 				if not dbModule.insertToDB("update user set api_token = '%s' where %s = '%s'"%(api_token,choice,email)):
-					return {'error':'login failed'}
+					return {'status':'failed','error':'login failed'}
 				return self.fetchUserByEmail(email)
-		return {'error':'login failed'}
+		return {'status':'failed','error':'login failed'}
 
 	def signOut(self, id):
 		if dbModule.insertToDB("update user set api_token = null where id = %s"%id):
