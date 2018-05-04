@@ -1,5 +1,6 @@
 from DB import dbmodule as db
-import base64, string, random
+from Encoder import encoder
+
 dbModule = db.DBModule(host='localhost',user='root',pswd='carrot24',db='BabyStepsDB')
 
 class Users:
@@ -28,7 +29,7 @@ class Users:
 		return user
 
 	def create(self, email,phone,address,password):
-		password = base64.b64encode(password)
+		password = encoder.encode(password)
 		query = "insert into user (email,phone_no,address,password) values('%s','%s','%s','%s')"%(email,phone,address,password)
 		if dbModule.insertToDB(query):
 			return self.fetchUserByEmail(email)
@@ -64,7 +65,8 @@ class Users:
 			return {'status':'failed','error':'email or phone required'}
 		if not password:
 			return {'status':'failed','error':'password required'}
-		password = base64.b64encode(password)
+		password = encoder.encode(password)
+		return password
 		if email:
 			choice = "email"
 			query = "select * from user where email = '%s' and password = '%s'"%(email, password)

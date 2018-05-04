@@ -54,11 +54,11 @@ def meals():
 def userMeals(user_id):
 	return jsonify(ml.Meals().fetchMealsOfUser(user_id))
 
-@app.route('/users/<int:user_id>/meals/meal_id', methods=['GET'])
-def userMeals(user_id, meal_id):
+@app.route('/users/<int:user_id>/meals/<int:meal_id>', methods=['GET'])
+def userMeal(user_id, meal_id):
 	return jsonify(ml.Meals().fetchUserById(user_id, meal_id))
 
-@app.route('/meals/<int:meal_id',methods=['PUT','PATCH'])
+@app.route('/meals/<int:meal_id>',methods=['PUT','PATCH'])
 def alterMeals(meal_id):
 	user_id = requst.args.get('user_id')
 	meal = request.args.get('meal')
