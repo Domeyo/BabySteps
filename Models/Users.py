@@ -66,7 +66,6 @@ class Users:
 		if not password:
 			return {'status':'failed','error':'password required'}
 		password = encoder.encode(password)
-		return password
 		if email:
 			choice = "email"
 			query = "select * from user where email = '%s' and password = '%s'"%(email, password)
