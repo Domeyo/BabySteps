@@ -1,5 +1,6 @@
 from DB import dbmodule as db
 from Encoder import encoder
+import random, string
 
 dbModule = db.DBModule(host='localhost',user='root',pswd='carrot24',db='BabyStepsDB')
 
@@ -77,11 +78,11 @@ class Users:
 			if choice == 'phone_no':
 				if not dbModule.insertToDB("update user set api_token = '%s' where %s = '%s'"%(api_token,choice,phone)):
 					return {'status':'failed','error':'login failed'}
-				return self.fetchUserByPhone(phone)
+				return {'status':'success','user':self.fetchUserByPhone(phone)}
 			else:
 				if not dbModule.insertToDB("update user set api_token = '%s' where %s = '%s'"%(api_token,choice,email)):
 					return {'status':'failed','error':'login failed'}
-				return self.fetchUserByEmail(email)
+				return {'status':'success','user':self.fetchUserByEmail(email)}
 		return {'status':'failed','error':'login failed'}
 
 	def signOut(self, id):

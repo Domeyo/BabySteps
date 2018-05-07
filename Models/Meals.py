@@ -11,6 +11,16 @@ class Meals:
 		meal={'meal_id':results[0],'user_id':results[1],'meal':results[2],'category':results[3]}
 		return {'status':'success','meal':meal}
 
+	def fetchAllMeals(self):
+		query = "select id, user_id, meal, category from meals order by created_at desc"
+		results = dbModule.selectStuff(query)
+		if not results:
+			return {'status':'failed','error':'no meals found'}
+		meals = {}
+                for i,result in enumerate(results):
+                        meals['meal(%s)'%i] = {'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]}
+                return {'status':'success','meals':meals}
+
 
 	def fetchMealsOfUser(self, user_id):
 		query = "select id,user_id, meal, category from meals where user_id = %s order by created_at desc"%user_id
@@ -24,7 +34,7 @@ class Meals:
 
 	def createMeal(self, user_id, meal, category):
 		query = "insert into meals (user_id, meal, category) values (%s,'%s','%s')"%(user_id,meal,category)
-		if dbModule.insertToDb(query):
+		if dbModule.insertToDB(query):
 			return {'status':'success','response':'meal created'}
 		return  {'status':'failed','error':'meal creation failed'}
 
@@ -36,12 +46,12 @@ class Meals:
 			return {'status':'failed','error':'this user cannot update this'}
 		if meal:
 			query = "update meals set meal = '%s' where id = %s"%(meal,meal_id)
-			if not dbModule.insertToDb(query):
+			if not dbModule.insertToDB(query):
 				commit = False
 			commit = True
 		if category:
 			query = "update meals set category = '%s' where id = %s"%(category,meal_id)
-			if not dbModule.insertToDb(query):
+			if not dbModule.insertToDB(query):
 				commit = False
 			commit = True
 		if commit:
@@ -54,6 +64,6 @@ class Meals:
 		if user[0] != str(user_id):
 			return {'status':'failed','error':'this user cannot update this'}
 		query = "delete from meals where id = %s"%meal_id
-		if dbModule.insertToDb(query):
+		if dbModule.insertToDB(query):
 			return {'status':'success','response':'meal deleted'}
 		return {'status':'failed','error':'failed to delete meal'}

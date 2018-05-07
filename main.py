@@ -43,9 +43,13 @@ def update(id):
 	return jsonify(ur.Users().update(id,email=email,phone_no=phone,address=address))
 
 #meals
+@app.route('/meals',methods=['GET'])
+def getMeals():
+	return jsonify(ml.Meals().fetchAllMeals())
+
 @app.route('/meals',methods=['POST'])
 def meals():
-	user_id = requst.args.get('user_id')
+	user_id = request.args.get('user_id')
 	meal = request.args.get('meal')
 	category = request.args.get('category')
 	return jsonify(ml.Meals().createMeal(user_id=user_id, meal=meal, category=category))
@@ -69,6 +73,6 @@ def alterMeals(meal_id):
 def dropMeal(meal_id):
 	user_id = requst.args.get('user_id')
 	return jsonify(ml.Meals().delete(user_id,meal_id))
-	
+
 if __name__ == "__main__":
 	app.run(debug=True)
