@@ -42,6 +42,7 @@ def update(id):
 	address = request.args.get('address')
 	return jsonify(ur.Users().update(id,email=email,phone_no=phone,address=address))
 
+
 #meals
 @app.route('/meals',methods=['GET'])
 def getMeals():
@@ -73,6 +74,39 @@ def alterMeals(meal_id):
 def dropMeal(meal_id):
 	user_id = requst.args.get('user_id')
 	return jsonify(ml.Meals().delete(user_id,meal_id))
+
+
+
+#posts
+@app.route('/posts',methods=['GET'])
+def getPosts():
+	return jsonify(pst.Posts().fetchAllPosts())
+
+@app.route('/posts/<int:id>',methods=['GET'])
+def getPost(id):
+	return jsonify(pst.Posts().getPost(id = id))
+
+@app.route('/posts/<int:id>',methods=['PUT','PATCH'])
+def editPost(id):
+	user_id = request.args.get('user_id')
+	title = request.args.get('title')
+	body = request.args.get('body')
+	return jsonify(pst.Posts().edit(id=id, user_id=user_id, title=title, body=body))
+
+@app.route('/posts/<int:id>',methods=['DELETE'])
+def dropPost(id):
+	user_id = request.args.get('user_id')
+	return jsonify(pst.Posts().delete(id=id, user_id=user_id))
+#user posts
+@app.route('/users/<int:ser_id>/posts',methods=['GET'])
+def getUserPosts(user_id):
+	return jsonify(pst.Posts().userPosts(user_id))
+
+@app.route('/users/<int:user_id>/posts/<int:id>',methods=['GET'])
+def getUserPost(user_id, id):
+	return jsonify(pst.Posts().getPost(id,user_id))
+
+#comments
 
 if __name__ == "__main__":
 	app.run(debug=True)

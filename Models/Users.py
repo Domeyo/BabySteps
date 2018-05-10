@@ -11,7 +11,7 @@ class Users:
 		if not results:
 			return {'status':'failed', 'response':"user not found"}
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
-		return user
+		return {'status':'success','user':user}
 
 	def fetchUserByEmail(self, email):
 		query =  "select id, email, phone_no, address, api_token from user where email = '%s'"%(email)
@@ -19,7 +19,7 @@ class Users:
 		if not results:
 			return {'status':'failed', 'response':"user not found"}
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
-		return user
+		return {'status':'success','user':user}
 
 	def fetchUserByPhone(self, phone):
 		query =  "select id, email, phone_no, address, api_token from user where phone_no = '%s'"%phone
@@ -27,7 +27,7 @@ class Users:
 		if not results:
 			return {'status':'failed','response':"user not found"}
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
-		return user
+		return {'status':'success','user':user}
 
 	def create(self, email,phone,address,password):
 		password = encoder.encode(password)
@@ -57,7 +57,7 @@ class Users:
 				count = False
 			count = True
 		if count:
-			return {'status':'sucess'}
+			return {'status':'success'}
 		return {'status':'failed'}
 
 	def signIn(self,email=None,phone=None,password=None):
