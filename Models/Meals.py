@@ -16,10 +16,10 @@ class Meals:
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','error':'no meals found'}
-		meals = {}
-                for i,result in enumerate(results):
-                        meals['meal(%s)'%i] = {'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]}
-                return {'status':'success','meals':meals}
+		meals={}
+		for i,result in enumerate(results):
+			meals['meal(%s)'%i] = {'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]}
+		return {'status':'success', 'meals':meals }
 
 
 	def fetchMealsOfUser(self, user_id):
@@ -38,11 +38,11 @@ class Meals:
 			return {'status':'success','response':'meal created'}
 		return  {'status':'failed','error':'meal creation failed'}
 
-	def editMeal(user_id,meal_id,meal=None,category=None):
+	def editMeal(self, user_id, meal_id, meal=None, category=None):
 		commit = False
 		query = "select user_id from meals where id = %s"%meal_id
 		user = dbModule.selectStuff(query)
-		if user[0] != str(user_id):
+		if user[0][0] != str(user_id):
 			return {'status':'failed','error':'this user cannot update this'}
 		if meal:
 			query = "update meals set meal = '%s' where id = %s"%(meal,meal_id)
@@ -58,10 +58,10 @@ class Meals:
 			return {'status':'success','response':'meal update successfully'}
 		return {'status':'failed','error':'failed to update meals'}
 
-	def delete(user_id,meal_id):
+	def delete(self, user_id,meal_id):
 		query = "select user_id from meals where id = %s"%meal_id
 		user = dbModule.selectStuff(query)
-		if user[0] != str(user_id):
+		if user[0][0] != str(user_id):
 			return {'status':'failed','error':'this user cannot update this'}
 		query = "delete from meals where id = %s"%meal_id
 		if dbModule.insertToDB(query):

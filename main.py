@@ -1,5 +1,5 @@
 from flask import Flask, Response, request, json, jsonify
-from Models import Users as ur, Meals as ml
+from Models import Users as ur, Meals as ml, Posts as pst, Comments as cmt
 app = Flask(__name__)
 
 #users
@@ -29,6 +29,10 @@ def login():
 	email = request.args.get('email')
 	phone = request.args.get('phone')
 	password = request.args.get('password')
+	if not email and not phone:
+		return jsonify({'status':'failed','error':'email or phone number required'})
+	if not password:
+		return jsonify({'status':'failed','error':'password required'}) 
 	return jsonify(ur.Users().signIn(email=email, phone=phone, password=password))
 
 @app.route('/logout/<int:user_id>', methods=['GET'])
@@ -41,7 +45,6 @@ def update(id):
 	phone = request.args.get('phone')
 	address = request.args.get('address')
 	return jsonify(ur.Users().update(id,email=email,phone_no=phone,address=address))
-
 
 #meals
 @app.route('/meals',methods=['GET'])
@@ -65,17 +68,15 @@ def userMeal(user_id, meal_id):
 
 @app.route('/meals/<int:meal_id>',methods=['PUT','PATCH'])
 def alterMeals(meal_id):
-	user_id = requst.args.get('user_id')
+	user_id = request.args.get('user_id')
 	meal = request.args.get('meal')
 	category = request.args.get('category')
-	return jsonify(ml.Meals().editMeal(user_id,meal_id,meal=meal,category=category))
+	return jsonify(ml.Meals().editMeal(user_id, meal_id, meal, category))
 
 @app.route('/meals/<int:meal_id>',methods=['DELETE'])
 def dropMeal(meal_id):
-	user_id = requst.args.get('user_id')
+	user_id = request.args.get('user_id')
 	return jsonify(ml.Meals().delete(user_id,meal_id))
-
-
 
 #posts
 @app.route('/posts',methods=['GET'])
@@ -84,7 +85,15 @@ def getPosts():
 
 @app.route('/posts/<int:id>',methods=['GET'])
 def getPost(id):
-	return jsonify(pst.Posts().getPost(id = id))
+	print(id)
+	return jsonify(pst.Posts().getPost(id))
+
+@app.route('/posts',methods=['POST'])
+def makePost():
+	user_id = request.args.get('user_id')
+	title = request.args.get('title')
+	body = request.args.get('body')
+	return jsonify(pst.Posts().create(user_id=user_id, title=title, body=body))
 
 @app.route('/posts/<int:id>',methods=['PUT','PATCH'])
 def editPost(id):
@@ -107,6 +116,24 @@ def getUserPost(user_id, id):
 	return jsonify(pst.Posts().getPost(id,user_id))
 
 #comments
+@app.route('/comments',methods=['POST'])
+def newComment():
+	user_id = request.args.get('user_id')
+	post_id = request.args.get('post_id')
+	body = request.args.get('body')
+	return jsonify(cmt.Comments().createPostComment(user_id,body,post_id))
+
+@app.route('/comments/<int:id>',methods=['PUT','PATCH'])
+def editComment(id):
+	user_id = request.args.get('user_id')
+	body = request.args.get('body')
+	return jsonify(cmt.Comments().editComment(user_id, id, body))
+
+@app.route('/comments/<int:id>',methods=['DELETE'])
+def deleteComment(id):
+		user_id = request.args.get('user_id')
+		return jsonify(cmt.Comments().delete(user_id, id))
+
 
 if __name__ == "__main__":
 	app.run(debug=True)
