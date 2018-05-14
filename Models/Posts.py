@@ -1,5 +1,5 @@
-from DB import dbmodule as db
-dbModule = db.DBModule(host='localhost',user='root',pswd='carrot24', db='BabyStepsDB')
+from DataBase import dbmodule as db
+dbModule = db.Database()
 
 class Posts(object):
 	def fetchAllPosts(self):

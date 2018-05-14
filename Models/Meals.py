@@ -1,13 +1,14 @@
-from DB import dbmodule as db
-dbModule = db.DBModule(host='localhost',user='root',pswd='carrot24',db='BabyStepsDB')
+from DataBase import dbmodule as db
+dbModule = db.Database()
 
 class Meals:
 	def fetchMealsById(self, user_id, meals_id):
-		query = "select id, user_id, meal, category from meals where id = '%s' and user_id = '%s' "
-		query = query%(user_id, meals_id)
-		results = dbModule.selectStuff(query)[0]
+		query = "select id, user_id, meal, category from meals where id = %s and user_id = %s "
+		query = query%(meals_id, user_id)
+		results = dbModule.selectStuff(query)
 		if not results:
 			return {'response':'meal not found'}
+		results = results[0]
 		meal={'meal_id':results[0],'user_id':results[1],'meal':results[2],'category':results[3]}
 		return {'status':'success','meal':meal}
 

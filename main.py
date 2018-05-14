@@ -44,6 +44,8 @@ def update(id):
 	email = request.args.get('email')
 	phone = request.args.get('phone')
 	address = request.args.get('address')
+	if not email or not phone or not address:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(ur.Users().update(id,email=email,phone_no=phone,address=address))
 
 #meals
@@ -56,6 +58,8 @@ def meals():
 	user_id = request.args.get('user_id')
 	meal = request.args.get('meal')
 	category = request.args.get('category')
+	if not user_id or not meal or not category:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(ml.Meals().createMeal(user_id=user_id, meal=meal, category=category))
 
 @app.route('/users/<int:user_id>/meals', methods=['GET'])
@@ -64,18 +68,22 @@ def userMeals(user_id):
 
 @app.route('/users/<int:user_id>/meals/<int:meal_id>', methods=['GET'])
 def userMeal(user_id, meal_id):
-	return jsonify(ml.Meals().fetchUserById(user_id, meal_id))
+	return jsonify(ml.Meals().fetchMealsById(user_id, meal_id))
 
 @app.route('/meals/<int:meal_id>',methods=['PUT','PATCH'])
 def alterMeals(meal_id):
 	user_id = request.args.get('user_id')
 	meal = request.args.get('meal')
 	category = request.args.get('category')
+	if not user_id or not meal or not category:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(ml.Meals().editMeal(user_id, meal_id, meal, category))
 
 @app.route('/meals/<int:meal_id>',methods=['DELETE'])
 def dropMeal(meal_id):
 	user_id = request.args.get('user_id')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(ml.Meals().delete(user_id,meal_id))
 
 #posts
@@ -93,6 +101,8 @@ def makePost():
 	user_id = request.args.get('user_id')
 	title = request.args.get('title')
 	body = request.args.get('body')
+	if not user_id or not title or not body:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(pst.Posts().create(user_id=user_id, title=title, body=body))
 
 @app.route('/posts/<int:id>',methods=['PUT','PATCH'])
@@ -100,11 +110,15 @@ def editPost(id):
 	user_id = request.args.get('user_id')
 	title = request.args.get('title')
 	body = request.args.get('body')
+	if not user_id or not title or not body:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(pst.Posts().edit(id=id, user_id=user_id, title=title, body=body))
 
 @app.route('/posts/<int:id>',methods=['DELETE'])
 def dropPost(id):
 	user_id = request.args.get('user_id')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(pst.Posts().delete(id=id, user_id=user_id))
 #user posts
 @app.route('/users/<int:ser_id>/posts',methods=['GET'])
@@ -121,19 +135,24 @@ def newComment():
 	user_id = request.args.get('user_id')
 	post_id = request.args.get('post_id')
 	body = request.args.get('body')
+	if not user_id or not post_id or not body:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(cmt.Comments().createPostComment(user_id,body,post_id))
 
 @app.route('/comments/<int:id>',methods=['PUT','PATCH'])
 def editComment(id):
 	user_id = request.args.get('user_id')
 	body = request.args.get('body')
+	if not user_id or not body:
+		return jsonify({'status':'failed','error':'missing fields'})
 	return jsonify(cmt.Comments().editComment(user_id, id, body))
 
 @app.route('/comments/<int:id>',methods=['DELETE'])
 def deleteComment(id):
 		user_id = request.args.get('user_id')
+		if not user_id:
+			return jsonify({'status':'failed','error':'missing fields'})
 		return jsonify(cmt.Comments().delete(user_id, id))
-
 
 if __name__ == "__main__":
 	app.run(debug=True)
