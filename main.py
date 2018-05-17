@@ -1,5 +1,6 @@
 from flask import Flask, Response, request, json, jsonify
-from Models import Users as ur, Meals as ml, Posts as pst, Comments as cmt
+from Models import Users as ur, Meals as ml, Posts as pst, Comments as cmt, Appointments as apts, Exercises as exe
+
 app = Flask(__name__)
 
 #users
@@ -149,10 +150,80 @@ def editComment(id):
 
 @app.route('/comments/<int:id>',methods=['DELETE'])
 def deleteComment(id):
-		user_id = request.args.get('user_id')
-		if not user_id:
-			return jsonify({'status':'failed','error':'missing fields'})
-		return jsonify(cmt.Comments().delete(user_id, id))
+	user_id = request.args.get('user_id')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(cmt.Comments().delete(user_id, id))
+
+#appointments
+@app.route('/users/<int:user_id>/appointments')
+def getAppointments(user_id):
+	return jsonify(apts.Appointments().fetchAll(user_id))
+
+@app.route('/users/<int:user_id>/appointments/<int:appointment_id>')
+def getAppointment(user_id, appointment_id):
+	return jsonify(apts.Appointments().fetchAppointment(user_id,appointment_id))
+
+@app.route('/appointments', methods=['POST'])
+def makeAppointment():
+	user_id = request.args.get('user_id')
+	description = request.args.get('description')
+	date = request.args.get('date')
+	time = request.args.get('time')
+	if not user_id or not description or not date or not time:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(apts.Appointments().create(user_id, description, date, time))
+
+
+@app.route('/appointments/<int:appointment_id>', methods=['PUT','PATCH'])
+def editAppointment(appointment_id):
+	user_id = request.args.get('user_id')
+	description = request.args.get('description')
+	date = request.args.get('date')
+	time = request.args.get('time')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(apts.Appointments().edit(user_id, appointment_id, description, date, time))
+
+@app.route('/appointments/<int:appointment_id>',methods=['DELETE'])
+def deleteAppointment(appointment_id):
+	user_id = request.args.get('user_id')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(apts.Appointments().delete(user_id,appointment_id))
+
+#Exercise
+@app.route('/users/<int:user_id>/exercises')
+def getExercises(user_id):
+	return jsonify(exe.Exercises().fetchAll(user_id))
+
+@app.route('/users/<int:user_id>/exercises/<int:exercise_id>')
+def getExercise(user_id, exercise_id):
+	return jsonify(exe.Exercises().fetchExercise(user_id,exercise_id))
+
+@app.route('/exercises', methods=['POST'])
+def makeExercise():
+	user_id = request.args.get('user_id')
+	exercise = request.args.get('exercise')
+	if not user_id or not exercise:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(exe.Exercises().create(user_id, exercise))
+
+
+@app.route('/exercises/<int:exercise_id>', methods=['PUT','PATCH'])
+def editExercise(exercise_id):
+	user_id = request.args.get('user_id')
+	exercise = request.args.get('exercise')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(exe.Exercises().edit(user_id, exercise_id, exercise))
+
+@app.route('/exercises/<int:exercise_id>',methods=['DELETE'])
+def deleteExercise(exercise_id):
+	user_id = request.args.get('user_id')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
+	return jsonify(exe.Exercises().delete(user_id, exercise_id))
 
 if __name__ == "__main__":
 	app.run(debug=True)

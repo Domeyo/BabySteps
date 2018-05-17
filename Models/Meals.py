@@ -43,7 +43,7 @@ class Meals:
 		commit = False
 		query = "select user_id from meals where id = %s"%meal_id
 		user = dbModule.selectStuff(query)
-		if user[0][0] != str(user_id):
+		if not user or user[0][0] != str(user_id):
 			return {'status':'failed','error':'this user cannot update this'}
 		if meal:
 			query = "update meals set meal = '%s' where id = %s"%(meal,meal_id)
@@ -62,7 +62,7 @@ class Meals:
 	def delete(self, user_id,meal_id):
 		query = "select user_id from meals where id = %s"%meal_id
 		user = dbModule.selectStuff(query)
-		if user[0][0] != str(user_id):
+		if not user or user[0][0] != str(user_id):
 			return {'status':'failed','error':'this user cannot update this'}
 		query = "delete from meals where id = %s"%meal_id
 		if dbModule.insertToDB(query):

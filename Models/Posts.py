@@ -13,7 +13,7 @@ class Posts(object):
 		return {'status':'success','posts':posts}
 
 	def userPosts(self, user_id):
-		query = "select id, user_id, title,  body from posts where user_id = %s"%user_id
+		query = "select id, user_id, title,  body from posts where user_id = %s order by created_at desc"%user_id
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','error':'no posts found'}
@@ -50,7 +50,7 @@ class Posts(object):
 		query = "select user_id from posts where id = %s"%(id)
 		user = dbModule.selectStuff(query)
 		print(user)
-		if user[0][0] != str(user_id):
+		if not user or user[0][0] != str(user_id):
 			return {'status':'failed','error':'this user cannot update this'}
 		if not title and not body:
 			return {'status':'failed','error':'no field to update'}
@@ -70,7 +70,7 @@ class Posts(object):
 	def delete(self,id,user_id):
 		query = "select user_id from posts where id = %s"%id
 		user = dbModule.selectStuff(query)
-		if user[0][0] != str(user_id):
+		if not user or user[0][0] != str(user_id):
 			return {'status':'failed','error':'this user cannot delete this'}
 		query = "delete from posts where id = %s"%id
 		if dbModule.insertToDB(query):

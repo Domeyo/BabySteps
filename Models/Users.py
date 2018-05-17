@@ -7,25 +7,28 @@ dbModule = db.Database()
 class Users:
 	def fetchUserById(self,id):
 		query =  "select id, email, phone_no, address, api_token from users where id = %s"%id
-		results = dbModule.selectStuff(query)[0]
+		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed', 'response':"user not found"}
+		results = results[0]
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
 		return {'status':'success','user':user}
 
 	def fetchUserByEmail(self, email):
 		query =  "select id, email, phone_no, address, api_token from users where email = '%s'"%(email)
-		results = dbModule.selectStuff(query)[0]
+		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed', 'response':"user not found"}
+		results = results[0]
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
 		return {'status':'success','user':user}
 
 	def fetchUserByPhone(self, phone):
 		query =  "select id, email, phone_no, address, api_token from users where phone_no = '%s'"%phone
-		results = dbModule.selectStuff(query)[0]
+		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','response':"user not found"}
+		results = results[0]
 		user = {'id':results[0],'email':results[1],'phone_no':results[2],'address':results[3],'api_token':results[4]}
 		return {'status':'success','user':user}
 
