@@ -85,7 +85,7 @@ class Users:
 			else:
 				if not dbModule.insertToDB("update users set api_token = '%s' where %s = '%s'"%(api_token,choice,email)):
 					return {'status':'failed','error':'login failed'}
-				return {'status':'success','user':self.fetchUserByEmail(email)}
+				return self.fetchUserByEmail(email)
 		return {'status':'failed','error':'login failed'}
 
 	def signOut(self, id):
