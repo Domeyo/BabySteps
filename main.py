@@ -15,7 +15,7 @@ def register():
 		return jsonify({'status':'failed','error':'missing fields'})
 	if not password == password_confirm:
 		return jsonify({'status':'failed','error':'passwords do not match'})
-	if ev.validateFormat(email):
+	if not ev.validateFormat(email):
 		return jsonify({'status':'failed','error':'invalid email format'})
 	return jsonify(ur.Users().create(email,phone,address,password))
 

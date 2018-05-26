@@ -3,7 +3,9 @@ import re
 
 def validateFormat(email):
 	pattern = r"[\w+]{1,}@[\w+]{1,}\.[\w+]"
+	print(email)
 	if re.match(pattern, email):
+		print("hahaha")
 		return True
 	return False
 
