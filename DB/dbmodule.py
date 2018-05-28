@@ -11,16 +11,18 @@ class DBModule(object):
     '''
 
     def __init__(self, **kwargs):
+        self.user = kwargs['user'] 
+        self.pswd = kwargs['pswd']
+        self.host = kwargs['host']
+        self.db = kwargs['db']
         conn = self.getConnection(kwargs['user'],kwargs['pswd'],kwargs['host'],kwargs['db'])
         if conn:
             self.conn,self.cursor = conn
     
     def getConnection(self, user=None, pswd=None, host=None, db=None):    
         if not user and not user:
-            print("no user or host")
             return False,_
         if not db:
-            print("no database or schema")
             return False
         try:
             connection = pymysql.connect(host=host, user=user, password=pswd, db=db)
@@ -30,15 +32,22 @@ class DBModule(object):
             return False
         return connection,cursor
     
-    def selectStuff(self,query):
-        #try:
-        self.cursor.execute(query)
-        results = self.cursor.fetchall()
-        if not results:
-            return False
-        #except:
-         #   print("Haha things went wrong")
-         #   return False
+    def selectStuff(self,query,count = 0):
+        try:
+            self.cursor.execute(query)
+            results = self.cursor.fetchall()
+            if not results:
+                return False
+        except:
+            self.reconnect()
+            if count < 3:
+                count += 1
+                results = self.selectStuff(query,count)
+                if not results:
+                    return False
+            else:
+                return False
+            
         tray = []
         for result in results:
             hold = []
@@ -48,24 +57,35 @@ class DBModule(object):
         return tray
     
     def selectOne(self,query):
-        #try:
-        self.cursor.execute(query)
-        result = self.cursor.fetchone()
-        #except:
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchone()
+        except:
+            return False
         return result
 
-    def insertToDB(self,query):
-        #try:
+    def insertToDB(self,query, count = 0):
+        try:
             self.cursor.execute(query)
             self.conn.commit()
             return True
-        #except:
-        #   return False
+        except:
+            self.reconnect()
+            if count < 3:
+                count += 1
+                if self.insertToDB(query,count):
+                    return True
+            return False
+        return False
 
     def __quit__(self):
         self.cursor.close()
         self.conn.close()
 
+    def reconnect(self):
+        conn = self.getConnection(self.user,self.pswd,self.host,self.db)
+        if conn:
+            self.conn,self.cursor = conn
 
 def main():
     query = 'select inst_id, date_downloaded, amount from trans where date(date_downloaded) = "%s" '
