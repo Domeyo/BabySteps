@@ -254,7 +254,8 @@ def getExercise(user_id, exercise_id):
 def makeExercise():
 	user_id = request.args.get('user_id')
 	exercise = request.args.get('exercise')
-	if not user_id or not exercise:
+	duration = request.args.get('duration')
+	if not user_id or not exercise or not duration:
 		return jsonify({'status':'failed','error':'missing fields'})
 	if not uv.loginStatus(user_id):
                 return jsonify({'status':'failed','error':'user not logged in'})
@@ -265,9 +266,10 @@ def makeExercise():
 def editExercise(exercise_id):
 	user_id = request.args.get('user_id')
 	exercise = request.args.get('exercise')
+	duration = request.args.get('duration')
 	if not user_id:
 		return jsonify({'status':'failed','error':'missing fields'})
-	return jsonify(exe.Exercises().edit(user_id, exercise_id, exercise))
+	return jsonify(exe.Exercises().edit(user_id, exercise_id, exercise, duration))
 
 @app.route('/exercises/<int:exercise_id>',methods=['DELETE'])
 def deleteExercise(exercise_id):
@@ -276,8 +278,11 @@ def deleteExercise(exercise_id):
 		return jsonify({'status':'failed','error':'missing fields'})
 	if not uv.loginStatus(user_id):
                 return jsonify({'status':'failed','error':'user not logged in'})
-
 	return jsonify(exe.Exercises().delete(user_id, exercise_id))
+
+#weight
+
+
 
 #hospital
 @app.route('/hospitals',methods=['GET'])
@@ -297,6 +302,10 @@ def assign():
 	if not uv.loginStatus(user_id):
                 return jsonify({'status':'failed','error':'user not logged in'})
 	return jsonify(hsp.assignUserToDoctor(user_id, doctor_id))
+
+@app.route('/doctor_profile/<int:doctor_id>')
+def docProfile(doctor_id):
+	return jsonify(hsp.doctorProfile(doctor_id))
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port="5000", debug=True)

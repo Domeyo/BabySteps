@@ -9,9 +9,9 @@ class Appointments:
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','error':'no appointments found for this user'}
-		appointments = {}
+		appointments = []
 		for count,result in enumerate(results):
-			appointments['appointment(%s)'%count] = {'appointment_id':result[0], 'user_id':result[1], 'description':result[2],'date':result[3], 'time':result[4]}
+			appointments.append({'appointment_id':result[0], 'user_id':result[1], 'description':result[2],'date':result[3], 'time':result[4]})
 		return {'status':'success', 'appointments':appointments}	
 
 	def fetchAppointment(self, user_id, appointment_id):

@@ -7,9 +7,9 @@ class Posts(object):
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','error':'no posts found'}
-		posts = {}
+		posts = []
 		for count,result in enumerate(results):
-			posts["post(%s)"%count] = {'id':result[0],'user_id':result[1],'title':result[2],'body':result[3]}
+			posts.append({'id':result[0],'user_id':result[1],'title':result[2],'body':result[3]})
 		return {'status':'success','posts':posts}
 
 	def userPosts(self, user_id):
@@ -17,9 +17,9 @@ class Posts(object):
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','error':'no posts found'}
-		posts = {}
+		posts = []
 		for count, result in enumerate(results):
-			posts["post(%s)"%count] = {'id':result[0], 'user_id':result[1], 'title':result[2], 'body':result[3]}
+			posts.append({'id':result[0], 'user_id':result[1], 'title':result[2], 'body':result[3]})
 		return {'status':'success', 'posts':posts}
 
 	def getPost(self, id, user_id=None):
@@ -33,10 +33,10 @@ class Posts(object):
 		post = {'id':result[0],'user_id':result[1],'title':result[2],'body':result[3]}
 		query = "select id, user_id, post_id, body from comments where post_id=%s"%result[0]
 		results = dbModule.selectStuff(query)
-		comments={}
+		comments=[]
 		if results:
 			for count, result in enumerate(results):
-				comments['comment(%s)'%count] = {'id':result[0], 'user_id':result[1], 'post_id':result[2], 'body':result[3]}
+				comments.append({'id':result[0], 'user_id':result[1], 'post_id':result[2], 'body':result[3]})
 		post['comments'] = comments
 		return {'status':'success','post':post}
 
