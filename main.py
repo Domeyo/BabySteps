@@ -1,5 +1,5 @@
 from flask import Flask, Response, request, json, jsonify
-from Models import Users as ur, Meals as ml, Posts as pst, Comments as cmt, Appointments as apts, Exercises as exe, Hospitals as hsp
+from Models import Users as ur, Meals as ml, Posts as pst, Comments as cmt, Appointments as apts, Exercises as exe, Hospitals as hsp, Weights as wgt
 from Validator import EmailValidation as ev, UserValidation as uv 
 app = Flask(__name__)
 
@@ -277,12 +277,51 @@ def deleteExercise(exercise_id):
 	if not user_id:
 		return jsonify({'status':'failed','error':'missing fields'})
 	if not uv.loginStatus(user_id):
-                return jsonify({'status':'failed','error':'user not logged in'})
+		return jsonify({'status':'failed','error':'user not logged in'})
 	return jsonify(exe.Exercises().delete(user_id, exercise_id))
 
 #weight
+@app.route('/users/<int:user_id>/weights', methods=['GET'])
+def fetchWeights(user_id):
+	if not uv.loginStatus(user_id):
+		return jsonify({'status':'failed','error':'user not logged in'})
+	return jsonify(wgt.fetchWeights(user_id))
 
+@app.route('/users/<int:user_id>/weights/<int:weight_id>', methods=['GET'])
+def fetchWeight(user_id, weight_id):
+	if not uv.loginStatus(user_id):
+		return jsonify({'status':'failed','error':'user not logged in'})
+	return jsonify(wgt.fetchWeight(user_id, weight_id))
 
+@app.route('/weights',methods=['POST'])
+def create():
+	user_id = request.args.get('user_id')
+	weight = request.args.get('weight')
+	if not user_id and not weight:
+		return jsonify({'status':'failed','error':'missing fields'})
+	if not uv.loginStatus(user_id):
+		return jsonify({'status':'failed','error':'user not logged in'})
+
+	return jsonify(wgt.create(user_id, weight))
+
+@app.route('/weights/<int:weight_id>',methods=['PUT','PATCH'])
+def edit(weight_id):
+	user_id = request.args.get('user_id')
+	weight = request.args.get('weight')
+	if not user_id and not weight:
+		return jsonify({'status':'failed','error':'missing fields'})
+	if not uv.loginStatus(user_id):
+		return jsonify({'status':'failed','error':'user not logged in'})
+	return jsonify(wgt.edit(user_id, weight_id, weight))
+
+@app.route('/weights/<int:weight_id>', methods=['DELETE'])
+def delete(weight_id):
+	user_id = request.args.get('user_id')
+	if not user_id:
+		return jsonify({'status':'failed','error':'missing fields'})
+	if not uv.loginStatus(user_id):
+		return jsonify({'status':'failed','error':'user not logged in'})
+	return jsonify(wgt.delete(user_id, weight_id))
 
 #hospital
 @app.route('/hospitals',methods=['GET'])
@@ -300,7 +339,7 @@ def assign():
 	if not user_id or not doctor_id:
 		return {'status':'failed', 'error':'missing fields'}
 	if not uv.loginStatus(user_id):
-                return jsonify({'status':'failed','error':'user not logged in'})
+		return jsonify({'status':'failed','error':'user not logged in'})
 	return jsonify(hsp.assignUserToDoctor(user_id, doctor_id))
 
 @app.route('/doctor_profile/<int:doctor_id>')

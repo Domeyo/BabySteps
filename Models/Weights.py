@@ -17,6 +17,7 @@ def fetchWeight(user_id,weight_id):
 	result = dbModule.selectStuff(query)
 	if not result:
 		return {'status':'failed', 'error':'record not found'}
+	result =result[0]
 	weight = {'id':result[0],'user_id':result[1],'weight':result[2]}
 	return {'status':'success', 'weight':weight}
 
@@ -33,7 +34,7 @@ def edit(user_id, weight_id, weight):
 		return {'status':'failed','error':'users is unauthorized to modify this'}
 	query = 'update weights set weight="%s" where id = %s'%(weight,weight_id)
 	if dbModule.insertToDB(query):
-		return {'status':'success', 'response','edit was successfully recorded'}
+		return {'status':'success', 'response':'edit was successfully recorded'}
 	return {'status':'failed','error':'editing failed'}
 
 def delete(user_id, weight_id):
