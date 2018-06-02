@@ -17,9 +17,9 @@ class Meals:
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','error':'no meals found'}
-		meals={}
+		meals=[]
 		for i,result in enumerate(results):
-			meals['meal(%s)'%i] = {'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]}
+			meals.append({'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]})
 		return {'status':'success', 'meals':meals }
 
 
@@ -28,9 +28,9 @@ class Meals:
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed','response':'meals not found'}
-		meals = {}
+		meals = []
 		for i,result in enumerate(results):
-			meals['meal(%s)'%i] = {'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]}
+			meals.append({'meal_id':result[0],'user_id':result[1],'meal':result[2],'category':result[3]})
 		return {'status':'success','meals':meals}
 
 	def createMeal(self, user_id, meal, category):
