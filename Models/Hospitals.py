@@ -56,11 +56,11 @@ def doctorProfile(doctor_id):
 	return {'status':'success','doctor':doctor} 
 
 def listDoctors():
-	query = "select fullname, email, hospital_id from BSadmin_doctor"
+	query = "select id, fullname, email, hospital_id from BSadmin_doctor"
 	results = dbModule.selectStuff(query)
 	if not results:
 		return {'status':'failed','error':'no records for doctors'}
-	doctors = [{'fullname':result[0], 'email':result[1], 'hospital_id':result[2]} for result in results]
+	doctors = [{'id':result[0],'fullname':result[1], 'email':result[2], 'hospital_id':result[3]} for result in results]
 	return {'success':'success', 'doctors':doctors}
 	
 
