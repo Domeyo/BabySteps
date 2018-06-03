@@ -346,5 +346,9 @@ def assign():
 def docProfile(doctor_id):
 	return jsonify(hsp.doctorProfile(doctor_id))
 
+@app.route('/doctors',methods=['GET'])
+def docList():
+	return jsonify(hsp.listDoctors())
+
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port="5000", debug=True)
