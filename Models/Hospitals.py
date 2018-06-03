@@ -60,7 +60,7 @@ def listDoctors():
 	results = dbModule.selectStuff(query)
 	if not results:
 		return {'status':'failed','error':'no records for doctors'}
-	doctors = [{'fullname':result[0], 'email':result[1], 'hospital_id':result[2]}]
+	doctors = [{'fullname':result[0], 'email':result[1], 'hospital_id':result[2]} for result in results]
 	return {'success':'success', 'doctors':doctors}
 	
 
