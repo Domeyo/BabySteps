@@ -54,3 +54,15 @@ def doctorProfile(doctor_id):
 		hospital = {'name':result[0], 'location':result[1], 'address':result[2], 'telephone':result[3]}
 	doctor['hospital'] = hospital
 	return {'status':'success','doctor':doctor} 
+
+def listDoctors():
+	query = "select fullname, email, hospital_id from BSadmin_doctor"
+	results = dbModule.selectStuff(query)
+	if not results:
+		return {'status':'failed','error':'no records for doctors'}
+	doctors = [{'fullname':result[0], 'email':result[1], 'hospital_id':result[2]}]
+	return {'success':'success', 'doctors':doctors}
+	
+
+
+
