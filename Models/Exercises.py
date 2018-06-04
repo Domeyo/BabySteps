@@ -23,7 +23,7 @@ class Exercises:
 		return {'status':'success', 'exercise':exercise}
 
 	def create(self, user_id, exercise, duration):
-		query = "insert into exercises(user_id, exercise, duration) values (%s, '%s', '%s')"%(user_id,exercise, duration)
+		query = 'insert into exercises(user_id, exercise, duration) values (%s, "%s", "%s")'%(user_id,exercise, duration)
 		if dbModule.insertToDB(query):
 			return {'status':'success','response':'exercise recorded successfully'}
 		return {'status':'failed','error':'failed while inserting data'}
