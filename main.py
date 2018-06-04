@@ -259,7 +259,7 @@ def makeExercise():
 		return jsonify({'status':'failed','error':'missing fields'})
 	if not uv.loginStatus(user_id):
                 return jsonify({'status':'failed','error':'user not logged in'})
-	return jsonify(exe.Exercises().create(user_id, exercise))
+	return jsonify(exe.Exercises().create(user_id, exercise, duration))
 
 
 @app.route('/exercises/<int:exercise_id>', methods=['PUT','PATCH'])
