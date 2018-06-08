@@ -105,6 +105,14 @@ def dropMeal(meal_id):
                 return jsonify({'status':'failed','error':'user not logged in'})
 	return jsonify(ml.Meals().delete(user_id,meal_id))
 
+@app.route('/foodlist',methods=['GET'])
+def getMealList():
+	return jsonify(ml.Meals().foodList())
+
+@app.route('/foodlist/<int:week>', methods=['GET'])
+def getWeekList(week):
+	return jsonify(ml.Meals().foodListWeek(week))
+
 #posts
 @app.route('/posts',methods=['GET'])
 def getPosts():

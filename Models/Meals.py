@@ -68,3 +68,24 @@ class Meals:
 		if dbModule.insertToDB(query):
 			return {'status':'success','response':'meal deleted'}
 		return {'status':'failed','error':'failed to delete meal'}
+	
+	def foodList(self):
+		query = "select * from foodList"
+		results = dbModule.selectStuff(query)
+		if not results:
+			return {'status':'failed', 'error':'records not found'}
+		foods = []
+		for result in results:
+			foods.append({'week':result[0], 'food':result[1], 'nutrient':result[2]})
+		return {'status':'success', 'food_list':foods}
+
+	def foodListWeek(self,week):
+		query = "select * from foodList where week = %s"%week
+		results = dbModule.selectStuff(query)
+		if not results:
+			return {'status':'failed', 'error':'records not found'}
+		foods = []
+		for result in results:
+			foods.append({'week':result[0], 'food':result[1], 'nutrient':result[2]})
+		return {'status':'success', 'food_list':foods}
+
