@@ -47,7 +47,7 @@ def load(fileName):
 		for food in week.getFoods():
 			values += '(%s,"%s","%s"),'%(num, food.getMeal(),food.getNutrient())
 		values=values.rstrip(',')
-		dbModule.insertToDB("insert into foodList values %s"%values)
+		dbModule.insertToDB("insert into foodList (week, food, nutrient) values %s"%values)
 
 if __name__=="__main__":
 	load(sys.argv[1])

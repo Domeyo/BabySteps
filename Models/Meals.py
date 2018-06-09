@@ -70,7 +70,7 @@ class Meals:
 		return {'status':'failed','error':'failed to delete meal'}
 	
 	def foodList(self):
-		query = "select * from foodList"
+		query = "select week, food, nutrient from foodList"
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed', 'error':'records not found'}
@@ -80,7 +80,7 @@ class Meals:
 		return {'status':'success', 'food_list':foods}
 
 	def foodListWeek(self,week):
-		query = "select * from foodList where week = %s"%week
+		query = "select week, food, nutrient from foodList where week = %s"%week
 		results = dbModule.selectStuff(query)
 		if not results:
 			return {'status':'failed', 'error':'records not found'}
